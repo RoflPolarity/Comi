@@ -111,20 +111,18 @@ public class Main {
     public static ArrayList<node> mutation(ArrayList<node>child){
         int pos1 = ThreadLocalRandom.current().nextInt(child.size()/4);
         int pos2 = ThreadLocalRandom.current().nextInt(pos1+2,child.size()-1);
-        System.out.println(child);
-            List<node> temp = child.subList(pos1+1,pos2);
+        System.out.println(child + " child");
+        List<node> temp = child.subList(pos1+1,pos2+1);
+        ArrayList<node> res = new ArrayList<>();
+        for(int i = 0; i<=pos1; i++)res.add(child.get(i));
         System.out.println(temp);
-        System.out.println(child);
-        ArrayList<node> res = new ArrayList<>(child);
         while (temp.size() != 0) {
-
                 node min = (temp.stream().min((x, y) -> (x.getLen(res.get(res.size() - 1)) < y.getLen(res.get(res.size() - 1))) ? 1 : -1).get());
                 res.add(min);
                 temp.remove(min);
             }
-            res.addAll(child.subList(pos2,child.size()));
-        System.out.println(child);
-        System.out.println(res);
+        res.addAll(child.subList(pos2,child.size()));
+        System.out.println(res + " res");
         return res;
     }
     public static ArrayList<node> cycledCrossover(ArrayList<node> father, ArrayList<node> mother){
@@ -139,6 +137,7 @@ public class Main {
         if (getMutation(mut)) {
            child = mutation(child);
         }
+
         return child;
     }
     public static ArrayList<ArrayList<node>> getRedux(ArrayList<ArrayList<node>> nodes){
