@@ -1,4 +1,5 @@
 import java.util.*;
+import java.util.concurrent.ThreadLocalRandom;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Main {
@@ -108,19 +109,20 @@ public class Main {
     }
     public static boolean getMutation(double mut){return Math.random() <= mut;}
     public static ArrayList<node> mutation(ArrayList<node>child){
-            ArrayList<node> res = new ArrayList<>();
-            int pos1 = new Random().nextInt(child.size() / 2);
-            int pos2 = pos1 + 3;
-            List<node> temp = child.subList(pos1 + 1, pos2+1);
-            res.addAll(child.subList(0,pos1));
+        int pos1 = ThreadLocalRandom.current().nextInt(child.size()/4);
+        int pos2 = ThreadLocalRandom.current().nextInt(pos1+2,child.size()-1);
+        System.out.println(child);
+            List<node> temp = child.subList(pos1+1,pos2);
         System.out.println(temp);
-            while (temp.size() != 0) {
+        System.out.println(child);
+        ArrayList<node> res = new ArrayList<>(child);
+        while (temp.size() != 0) {
+
                 node min = (temp.stream().min((x, y) -> (x.getLen(res.get(res.size() - 1)) < y.getLen(res.get(res.size() - 1))) ? 1 : -1).get());
                 res.add(min);
                 temp.remove(min);
-
             }
-            res.addAll(child.subList(pos2+1,child.size()-1));
+            res.addAll(child.subList(pos2,child.size()));
         System.out.println(child);
         System.out.println(res);
         return res;
