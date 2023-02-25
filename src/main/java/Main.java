@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class Main {
     static int n,a, max,min = Integer.MAX_VALUE, stop;
     static double mut;
+    static ArrayList<Integer> minArr = new ArrayList<>();
     static class rebro{
         node a,b;
         int len;
@@ -68,7 +69,7 @@ public class Main {
         for (int j = 1; j < n+1; j++){temp.add(new node(j));}
         for (int i = 0; i < temp.size(); i++){
             for (int j = 1; j < temp.size()-1; j++) {
-                temp.get(i).addRebro(temp.get(j), ThreadLocalRandom.current().nextInt(5,max));
+                temp.get(i).addRebro(temp.get(j), ThreadLocalRandom.current().nextInt(1,max));
             }
         }
         Set<ArrayList<node>> set = new HashSet<>();
@@ -77,10 +78,10 @@ public class Main {
 
 
         Random random = new Random();
-        int counter = 1;
+        int counter = 1, count = 0;
         System.out.println(first);
         System.out.println();
-        while (min>stop || counter>100){
+        while (true){
             System.out.println("Round " + counter);
             ArrayList<node> father = first.get(random.nextInt(first.size())), mother = first.get(random.nextInt(first.size()));
             while (father==mother) father = first.get(random.nextInt(first.size()));
@@ -93,14 +94,22 @@ public class Main {
             getRedux(first);
             System.out.println(first);
             counter++;
+            if (minArr.size()==first.size()){
+                if (check()){
+                    System.out.println("Кротчайший путь при заданных параметрах равен " + minArr.get(0));
+                    break;
+                }
+            }
         }
-
-
-
-
-
     }
-
+    public static boolean check(){
+        int count = 0;
+        int min = minArr.get(0);
+        for(Integer num : minArr){
+            if (num==min) count++;
+        }
+        return count == minArr.size();
+    }
     public static void printAllRecursive(ArrayList<node> elements, Set<ArrayList<node>> set, int size) {
         while (set.size()!=size){
             ArrayList<node> temp = new ArrayList<>(elements);
@@ -150,7 +159,7 @@ public class Main {
         }
         System.out.println(nums);
         System.out.println(nodes.get(nums.indexOf(Collections.max(nums)))+" node for remove");
-        min = Collections.min(nums);
+        minArr.add(Collections.min(nums));
         nodes.remove(nums.indexOf(Collections.max(nums)));
         return nodes;
     }
