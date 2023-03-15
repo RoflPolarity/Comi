@@ -1,3 +1,11 @@
+import guru.nidi.graphviz.attribute.Attributes;
+import guru.nidi.graphviz.attribute.ForNode;
+import guru.nidi.graphviz.attribute.Label;
+import guru.nidi.graphviz.engine.Format;
+import guru.nidi.graphviz.engine.Graphviz;
+import guru.nidi.graphviz.model.Link;
+import guru.nidi.graphviz.model.MutableGraph;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.*;
@@ -6,6 +14,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
+
+import static guru.nidi.graphviz.model.Factory.mutGraph;
+import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class TSPGeneticAlgorithm  {
     private static int[][] distances; // Матрица расстояний между городами
@@ -252,12 +263,25 @@ public class TSPGeneticAlgorithm  {
         }
         try {
             saveDistanceMatrix(res);
-        } catch (IOException e) {
+            saveGraph(res,"InitGraph");
+            } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return res;
     }
-
+    public static boolean saveGraph(int[][]arr, String name) throws IOException {
+        MutableGraph g = mutGraph(name);
+        for (int i = 0; i < arr.length; i++) {
+            for (int j = 0; j < arr.length; j++) {
+                if (arr[i][j]==0) break;
+                g.add(mutNode(String.valueOf(i)).addLink(mutNode(String.valueOf(j))));
+            }
+        }
+        File file = new File(name+".png");
+        if (!file.exists()) file.createNewFile();
+        Graphviz.fromGraph(g).width(800).height(600).render(Format.PNG).toFile(file);
+        return true;
+    }
     public static boolean saveDistanceMatrix(int[][] arr) throws IOException {
         File file = new File("InitDistanceMatrix.txt");
         if (!file.exists()) file.createNewFile();
@@ -304,7 +328,7 @@ public class TSPGeneticAlgorithm  {
         // Генерируем случайную матрицу расстояний
         int[][] distanceMatrix = generateRandomDistanceMatrix(num,a,b);
         // Создаём экземпляр генетического алгоритма
-        TSPGeneticAlgorithm ga = new TSPGeneticAlgorithm(distanceMatrix, pop, mut, 2, 5,50);
+        TSPGeneticAlgorithm ga = new TSPGeneticAlgorithm(distanceMatrix, pop, mut, 2, 5,5000);
 
         while (true){
             System.out.println("1.Сгенерировать новую случайную матрицу расстояний");
