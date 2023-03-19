@@ -25,10 +25,6 @@ public class TSPGeneticAlgorithm  {
     private int elitismCount; // Количество элитных особей
     private int generationCount; // Количество поколений
 
-    public static int[][] getDistances() {
-        return distances;
-    }
-
     public void setDistances(int[][] distances) {
         TSPGeneticAlgorithm.distances = distances;
     }
@@ -97,16 +93,6 @@ public class TSPGeneticAlgorithm  {
                 individual[swapIndex] = temp;
             }
         }
-    }
-
-    // Проверка, содержит ли массив заданный элемент
-    private boolean contains(int[] array, int element) {
-        for (int i = 0; i < array.length; i++) {
-            if (array[i] == element) {
-                return true;
-            }
-        }
-        return false;
     }
 
     // Перемешивание элементов массива в случайном порядке
@@ -201,7 +187,7 @@ public class TSPGeneticAlgorithm  {
                 int[] fittest = tournamentSelection(population);
                 newPopulation.add(fittest);
             }
-            for (int j = 0; j < populationSize - elitismCount; j++) {
+            for (int j = 0; j < populationSize; j++) {
                 int[] parent1 = tournamentSelection(population);
                 int[] parent2 = tournamentSelection(population);
                 int[] child = cycleCrossover(parent1, parent2);
@@ -230,7 +216,7 @@ public class TSPGeneticAlgorithm  {
                 int[] fittest = tournamentSelection(population);
                 newPopulation.add(fittest);
             }
-            for (int j = 0; j < populationSize - elitismCount; j++) {
+            for (int j = 0; j < populationSize; j++) {
                 int[] parent1 = tournamentSelection(population);
                 int[] parent2 = tournamentSelection(population);
                 int[] child = orderedCrossover(parent1, parent2);
@@ -355,19 +341,12 @@ public class TSPGeneticAlgorithm  {
         int b = new Scanner(System.in).nextInt();
         System.out.println("Введите размер популяции");
         int pop = new Scanner(System.in).nextInt();
-        if (pop>=num){
-            System.err.println("Размер популяции должен быть меньше числа городов!");
-            while (pop>=num){
-                System.out.println("Повторите ввод размера популяции.");
-                pop = new Scanner(System.in).nextInt();
-            }
-        }
         System.out.println("Введите верятность мутации");
         double mut = new Scanner(System.in).nextDouble();
         // Генерируем случайную матрицу расстояний
         int[][] distanceMatrix = generateRandomDistanceMatrix(num,a,b);
         // Создаём экземпляр генетического алгоритма
-        TSPGeneticAlgorithm ga = new TSPGeneticAlgorithm(distanceMatrix, pop, mut, 2, 5,5000);
+        TSPGeneticAlgorithm ga = new TSPGeneticAlgorithm(distanceMatrix, pop, mut, pop, num,5000);
 
         while (true){
             System.out.println("1.Сгенерировать новую случайную матрицу расстояний");
