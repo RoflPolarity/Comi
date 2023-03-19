@@ -1,10 +1,11 @@
-import guru.nidi.graphviz.attribute.Attributes;
-import guru.nidi.graphviz.attribute.ForNode;
-import guru.nidi.graphviz.attribute.Label;
-import guru.nidi.graphviz.engine.Format;
-import guru.nidi.graphviz.engine.Graphviz;
-import guru.nidi.graphviz.model.Link;
-import guru.nidi.graphviz.model.MutableGraph;
+
+import com.mxgraph.swing.mxGraphComponent;
+import com.mxgraph.view.mxGraph;
+import org.jgrapht.Graph;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
+import com.mxgraph.model.mxCell;
+
 
 import javax.swing.*;
 import java.awt.*;
@@ -15,8 +16,6 @@ import java.util.*;
 import java.util.List;
 import java.util.concurrent.ThreadLocalRandom;
 
-import static guru.nidi.graphviz.model.Factory.mutGraph;
-import static guru.nidi.graphviz.model.Factory.mutNode;
 
 public class TSPGeneticAlgorithm  {
     private static int[][] distances; // Матрица расстояний между городами
@@ -263,23 +262,58 @@ public class TSPGeneticAlgorithm  {
         }
         try {
             saveDistanceMatrix(res);
-            saveGraph(res,"InitGraph");
+            GraphVisualizer graphVisualizer = new GraphVisualizer();
+            graphVisualizer.saveGraph(res);
             } catch (IOException e) {
             throw new RuntimeException(e);
         }
         return res;
     }
-    public static boolean saveGraph(int[][]arr, String name) throws IOException {
-        MutableGraph g = mutGraph(name);
+    public static boolean saveGraph(int[][] arr, String name) throws IOException {
+        Graph<String, DefaultEdge> graph = new SimpleGraph<>(DefaultEdge.class);
+
+        for (int i = 0; i < arr.length; i++) {
+            graph.addVertex(String.valueOf(i));
+        }
+
         for (int i = 0; i < arr.length; i++) {
             for (int j = 0; j < arr.length; j++) {
-                if (arr[i][j]==0) break;
-                g.add(mutNode(String.valueOf(i)).addLink(mutNode(String.valueOf(j))));
+                if (arr[i][j] != 0) { // Проверяем наличие ребра между вершинами
+                    graph.addEdge(String.valueOf(i), String.valueOf(j));
+                }
             }
         }
-        File file = new File(name+".png");
-        if (!file.exists()) file.createNewFile();
-        Graphviz.fromGraph(g).width(800).height(600).render(Format.PNG).toFile(file);
+        // Создание объекта для отображения графа
+        mxGraph mxGraph = new mxGraph();
+        Object parent = mxGraph.getDefaultParent();
+
+        mxGraph.getModel().beginUpdate();
+        try {
+            for (int i = 0; i < arr.length; i++) {
+                // Добавление вершин на графическое поле
+                mxGraph.insertVertex(parent, null, String.valueOf(i), i + 20, i + 20, 50, 50);
+            }
+            for (DefaultEdge edge : graph.edgeSet()) {
+                // Получение вершин, соединенных ребром
+                String source = graph.getEdgeSource(edge);
+                String target = graph.getEdgeTarget(edge);
+                // Поиск соответствующих объектов вершин в графическом представлении
+                //Object sourceVertex = mxGraph.getChild(parent, source);
+                //Object targetVertex = mxGraph.getVertexToCellMap().get(target);
+                // Добавление ребра на графическое поле
+                //mxGraph.insertEdge(parent, null, "", sourceVertex, targetVertex);
+            }
+        } finally {
+            mxGraph.getModel().endUpdate();
+            }
+        // Создание компонента для отображения графа в окне
+        mxGraphComponent graphComponent = new mxGraphComponent(mxGraph);
+        JFrame frame = new JFrame();
+        frame.getContentPane().add(graphComponent);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setSize(400, 320);
+        frame.setVisible(true);
+
         return true;
     }
     public static boolean saveDistanceMatrix(int[][] arr) throws IOException {
@@ -299,10 +333,15 @@ public class TSPGeneticAlgorithm  {
     }
 
     public int[] setCrossover(char c){
+        GraphVisualizer gv = new GraphVisualizer();
         if (c=='1'){
-            return solveCycleCrossover();
+            var res = solveCycleCrossover();
+            gv.saveGraph(distances,res);
+            return res;
         } else if (c=='2') {
-            return solveOrderedCrossover();
+            var res = solveOrderedCrossover();
+            gv.saveGraph(distances,res);
+            return res;
         }else throw new IllegalArgumentException();
     }
 
