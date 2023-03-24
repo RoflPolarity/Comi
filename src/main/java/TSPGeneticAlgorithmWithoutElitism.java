@@ -275,7 +275,7 @@ public class TSPGeneticAlgorithmWithoutElitism {
                 ga.saveGraph(distanceMatrix,bestRoute);
                 System.out.println("Length of best route found: " + getDistance(bestRoute,distanceMatrix));
             } else if (menuNum==3) {
-                var resultRoute = solveForOnePointCrossover(distanceMatrix,pop,5000,mut);
+                var resultRoute = solveForOnePointCrossover(distanceMatrix,pop,50000,mut);
                 System.out.println("Одноточный кроссовер");
                 System.out.println("Best route found:");
                 System.out.println(Arrays.toString(resultRoute));
