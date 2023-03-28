@@ -44,7 +44,7 @@ public class tests {
         var seriesCycled = new XYSeries("Циклический кроссовер");
         seriesCycled.add(1,CycledOverage[0]);
         var seriesOnePoint = new XYSeries("Одноточечный кроссовер");
-        seriesOnePoint.add(10,OnePointOverage[0]);
+        seriesOnePoint.add(8,OnePointOverage[0]);
         dataset.addSeries(seriesCycled);
         dataset.addSeries(seriesOnePoint);
         JFreeChart histogram = ChartFactory.createHistogram("Запуск для 11 вершин","","",dataset);
@@ -74,7 +74,7 @@ public class tests {
         var seriesCycled = new XYSeries("Циклический кроссовер");
         seriesCycled.add(1,CycledOverage[0]);
         var seriesOnePoint = new XYSeries("Одноточечный кроссовер");
-        seriesOnePoint.add(10,OnePointOverage[0]);
+        seriesOnePoint.add(8,OnePointOverage[0]);
         dataset.addSeries(seriesCycled);
         dataset.addSeries(seriesOnePoint);
         JFreeChart histogram = ChartFactory.createHistogram("Запуск для 9 вершин","","",dataset);
@@ -104,7 +104,7 @@ public class tests {
         var seriesCycled = new XYSeries("Циклический кроссовер");
         seriesCycled.add(1,CycledOverage[0]);
         var seriesOnePoint = new XYSeries("Одноточечный кроссовер");
-        seriesOnePoint.add(10,OnePointOverage[0]);
+        seriesOnePoint.add(8,OnePointOverage[0]);
         dataset.addSeries(seriesCycled);
         dataset.addSeries(seriesOnePoint);
         JFreeChart histogram = ChartFactory.createHistogram("Запуск для 10 вершин","","",dataset);
